@@ -1,8 +1,35 @@
 const express = require("express");
 const app = express();
+var path = require("path");
+var fs = require("fs");
 
 app.use(express.json())
 app.set("port", 3000)
+
+app.use(function(req, res, next){
+    console.log("Request IP: " + req.url);
+    console.log("Request date " + new Date());
+    next();
+});
+
+app.use(function(req, res, next){
+    var filePath = path.join(__dirname, "static", req.url);
+    fs.stat(filePath, function(err, fileInfo){
+        if (err){
+            next();
+            return;
+        }
+        if(fileInfo.isFile())
+            res.sendFile(filePath);
+        else
+            next();
+    });
+});
+
+app.use(function(req, res){
+    res.status(404);
+    res.send("File not Found!");
+});
 
 app.use ((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
