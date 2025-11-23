@@ -20,6 +20,20 @@ app.use ((req,res,next) => {
     next();
 })
 
+app.use(function(req, res, next){
+    var filePath = path.join(__dirname, "static", req.url);
+    fs.stat(filePath, function(err, fileInfo){
+        if (err){
+            next();
+            return;
+        }
+        if(fileInfo.isFile())
+            res.sendFile(filePath);
+        else
+            next();
+    });
+});
+
 const MongoClient = require("mongodb").MongoClient;
 
 let db;
@@ -80,20 +94,6 @@ app.delete('/collection/:collectionName/:id', (req, res, next) => {
 app.use(function(req, res){
     res.status(404);
     res.send("File not Found!");
-});
-
-app.use(function(req, res, next){
-    var filePath = path.join(__dirname, "static", req.url);
-    fs.stat(filePath, function(err, fileInfo){
-        if (err){
-            next();
-            return;
-        }
-        if(fileInfo.isFile())
-            res.sendFile(filePath);
-        else
-            next();
-    });
 });
 
 const port = process.env.PORT || 3000
