@@ -71,14 +71,6 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
             res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
         });
 });
- 
-app.delete('/collection/:collectionName/:id', (req, res, next) => {
-    req.collection.deleteOne(
-        {_id: ObjectID(req.params.id) }, (e, result) => {
-            if (e) return next(e)
-            res.send((result.result.n === 1) ? {msg: 'success'} : {msg: 'error'});
-        });
-});
 
 app.use(function(req, res){
     res.status(404);
