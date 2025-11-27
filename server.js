@@ -4,6 +4,14 @@ var fs = require("fs");
 
 const app = express();
 
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'https://avrylrodrigues.github.io', // or '*' to allow all
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}));
+
+
 app.use ((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader("Access-Control-Allow-Credentials", "true");
