@@ -1,16 +1,14 @@
 const express = require("express");
 var path = require("path");
-var fs = require("fs");
 
 const app = express();
 
 const cors = require('cors');
 
 app.use(cors({
-  origin: 'https://avrylrodrigues.github.io', // or '*' to allow all
+  origin: 'https://avrylrodrigues.github.io',
   methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
-
 
 app.use ((req,res,next) => {
     res.setHeader('Access-Control-Allow-Origin', '*');
