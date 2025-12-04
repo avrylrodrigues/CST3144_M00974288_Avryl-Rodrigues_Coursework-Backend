@@ -90,6 +90,23 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
         });
 });
 
+// Search feature
+app.get("/search", (req, res, next) => {
+    let q = req.query.q || "";
+    const query = {
+        $or: [
+            { Subject: { $regex: q, $options: "i" } },
+            { Location: { $regex: q, $options: "i" } },
+            { Price: { $regex: q, $options: "i" } },
+            { availableSeats: { $regex: q, $options: "i" } }
+        ]
+    };
+    db.collection("Lessons").find(query).toArray((err, results) => {
+        if (err) return next(err);
+        res.send(results);
+    });
+});
+
 // Error Handler
 app.use(function(req, res){
     res.status(404);
