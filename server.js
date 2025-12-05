@@ -92,7 +92,10 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
 
 // Search feature
 app.get("/search", (req, res, next) => {
-    let q = req.query.q || "";
+    // Extract the query from the request
+    let q = req.query.search || ""; 
+    // Log the user's query to the console
+    console.log(`[SEARCH] Server received query: "${q}"`);
     const query = {
         $or: [
             { Subject: { $regex: q, $options: "i" } },
@@ -100,9 +103,14 @@ app.get("/search", (req, res, next) => {
             { Price: { $regex: q, $options: "i" } },
             { availableSeats: { $regex: q, $options: "i" } }
         ]
-    };
-    db.collection("Lessons").find(query).toArray((err, results) => {
-        if (err) return next(err);
+    }; 
+    // Search the Lessons collection
+    db.collection("Lessons").find(query).toArray((e, results) => {
+        if (e) {
+            console.error("[SEARCH] DATABASE ERROR:", e);
+            return next(e);
+        }
+        console.log(`[SEARCH] Successfully completed for "${q}". Found ${results.length} lessons.`);
         res.send(results);
     });
 });
