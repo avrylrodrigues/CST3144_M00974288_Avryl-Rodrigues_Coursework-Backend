@@ -92,26 +92,27 @@ app.put('/collection/:collectionName/:id', (req, res, next) => {
 
 // Search feature
 app.get("/search", (req, res, next) => {
-    // Extract the query from the request
-    let q = req.query.search || ""; 
-    // Log the user's query to the console
-    console.log(`[SEARCH] Server received query: "${q}"`);
+    let q = req.query.q || "";
+    const numericQ = parseInt(q, 10);
     const query = {
         $or: [
-            { Subject: { $regex: q, $options: "i" } },
-            { Location: { $regex: q, $options: "i" } },
-            { Price: { $regex: q, $options: "i" } },
-            { availableSeats: { $regex: q, $options: "i" } }
+            {Subject: {$regex: q, $options: "i"}},
+            {Location: {$regex: q, $options: "i"}}
         ]
-    }; 
-    // Search the Lessons collection
+    };
+    if (!isNaN(numericQ) && q.trim() !== ""){
+        query.$or.push(
+            {Price: numericQ},
+            {availableSeats: numericQ}
+        );
+    } 
+    query.$or.push(
+        {Price: {$regex: q, $options: "i"}},
+        {availableSeats: {$regex: q, $options: "i"}}
+    );
     db.collection("Lessons").find(query).toArray((e, results) => {
-        if (e) {
-            console.error("[SEARCH] DATABASE ERROR:", e);
-            return next(e);
-        }
-        console.log(`[SEARCH] Successfully completed for "${q}". Found ${results.length} lessons.`);
-        res.send(results);
+        if (e) return next(e);
+        res.send(results); 
     });
 });
 
