@@ -21,7 +21,8 @@ app.use ((req,res,next) => {
 // Middleware to log date and method of the request
 app.use(function(req, res, next){
     console.log("Request date: " + new Date());
-    console.log("Request method: ", req.method)
+    console.log("Request method: ", req.method);
+    console.log("Request path: ", req.path);
     next();
 });
 
