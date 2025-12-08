@@ -23,7 +23,7 @@ app.use(function(req, res, next){
     console.log("Request date: " + new Date());
     console.log("Request method: ", req.method);
     console.log("Request path: ", req.path);
-    console.log("Request Query: ", req.query);
+    console.log("Request Query: ", JSON.stringify(req.query));
     next();
 });
 
